@@ -34,7 +34,7 @@ public sealed class PlayerMovement : Component
 	protected override void OnUpdate()
 	{
 		// Set sprint and crouching states
-		IsCrouching = Input.Down( "Duck" );
+		updateCrouch();
 		IsSprinting = Input.Down( "Run" );
 		if(Input.Pressed("Jump")) Jump();
 		RotateBody();
@@ -138,5 +138,23 @@ public sealed class PlayerMovement : Component
 		animationHelper.WithLook(Head.Transform.Rotation.Forward, 1f, 0.75f, 0.5f);
 		animationHelper.MoveStyle = CitizenAnimationHelper.MoveStyles.Run;
 		animationHelper.DuckLevel = IsCrouching ? 1f : 0f;
+	}
+
+	void updateCrouch()
+	{
+		if ( characterController is null ) return;
+
+		if ( Input.Pressed( "Duck" ) && !IsCrouching )
+		{
+			IsCrouching = true;
+			characterController.Height /= 2f;
+		}
+		
+		if ( Input.Released( "Duck" ) && IsCrouching )
+		{
+			// TODO: do an upwards trace to see if there is a cealing above us
+			IsCrouching = false;
+			characterController.Height *= 2f;
+		}
 	}
 }
