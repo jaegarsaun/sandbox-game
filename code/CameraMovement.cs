@@ -11,10 +11,12 @@ public sealed class CameraMovement : Component
 	//Variables
 	public bool isFirstPerson => Distance == 0f;
 	private CameraComponent Camera;
+	private ModelRenderer BodyRenderer;
 
 	protected override void OnAwake()
 	{
 		Camera = Components.Get<CameraComponent>();
+		BodyRenderer = Body.Components.Get<ModelRenderer>();
 	}
 
 
@@ -51,6 +53,14 @@ public sealed class CameraMovement : Component
 				{
 					camPos = camTrace.EndPosition;
 				}
+				
+				//Show body if not in first person
+				BodyRenderer.RenderType = ModelRenderer.ShadowRenderType.On;
+			}
+			else
+			{
+				// Hide body
+				BodyRenderer.RenderType = ModelRenderer.ShadowRenderType.ShadowsOnly;
 			}
 			
 			//Set cam pos to calculated pos

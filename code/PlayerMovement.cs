@@ -1,5 +1,6 @@
 using Sandbox;
 using Sandbox.Citizen;
+using Sandbox.UI;
 
 public sealed class PlayerMovement : Component
 {
@@ -35,6 +36,9 @@ public sealed class PlayerMovement : Component
 		// Set sprint and crouching states
 		IsCrouching = Input.Down( "Duck" );
 		IsSprinting = Input.Down( "Run" );
+		if(Input.Pressed("Jump")) Jump();
+		RotateBody();
+		
 	}
 	
 	protected override void OnFixedUpdate()
@@ -96,5 +100,29 @@ public sealed class PlayerMovement : Component
 		{
 			characterController.Velocity = characterController.Velocity.WithZ( 0 );
 		}
+	}
+
+	void RotateBody()
+	{
+		if(Body is null) return;
+
+		var targetAngle = new Angles( 0, Head.Transform.Rotation.Yaw(), 0 ).ToRotation();
+
+		float rotateDifference = Body.Transform.Rotation.Distance( targetAngle );
+
+		if ( rotateDifference > 50f || characterController.Velocity.Length > 10f )
+		{
+			Body.Transform.Rotation = Rotation.Lerp(Body.Transform.Rotation, targetAngle, Time.Delta * 2f);
+			
+			
+		}
+		
+	}
+
+	void Jump()
+	{
+		if ( !characterController.IsOnGround ) return;
+		characterController.Punch((Vector3.Up * JumpForce));
+		animationHelper?.TriggerJump();
 	}
 }
