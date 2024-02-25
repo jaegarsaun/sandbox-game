@@ -12,7 +12,7 @@ public sealed class CameraMovement : Component
 	public bool isFirstPerson => Distance == 0f;
 	private CameraComponent Camera;
 	private ModelRenderer BodyRenderer;
-
+	private Vector3 CurrentOffset = Vector3.Zero;
 	protected override void OnAwake()
 	{
 		Camera = Components.Get<CameraComponent>();
@@ -30,11 +30,15 @@ public sealed class CameraMovement : Component
 		eyeAngles.pitch = eyeAngles.pitch.Clamp( -89.9f, 89.9f );
 		Head.Transform.Rotation = eyeAngles.ToRotation();
 		
+		// Set camera offset
+		var targetOffset = Vector3.Zero;
+		if ( Player.IsCrouching ) targetOffset += Vector3.Down * 32f;
+		CurrentOffset = Vector3.Lerp( CurrentOffset, targetOffset, Time.Delta * 10f );
 		
 		// Set camera pos
 		if ( Camera != null )
 		{
-			var camPos = Head.Transform.Position;
+			var camPos = Head.Transform.Position + CurrentOffset;
 
 			if ( !isFirstPerson )
 			{
