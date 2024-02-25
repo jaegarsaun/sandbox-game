@@ -38,6 +38,7 @@ public sealed class PlayerMovement : Component
 		IsSprinting = Input.Down( "Run" );
 		if(Input.Pressed("Jump")) Jump();
 		RotateBody();
+		UpdateAnimations();
 		
 	}
 	
@@ -124,5 +125,18 @@ public sealed class PlayerMovement : Component
 		if ( !characterController.IsOnGround ) return;
 		characterController.Punch((Vector3.Up * JumpForce));
 		animationHelper?.TriggerJump();
+	}
+
+	void UpdateAnimations()
+	{
+		if(animationHelper is null) return;
+		
+		animationHelper.WithWishVelocity(WishVelocity);
+		animationHelper.WithVelocity(characterController.Velocity);
+		animationHelper.AimAngle = Head.Transform.Rotation;
+		animationHelper.IsGrounded = characterController.IsOnGround;
+		animationHelper.WithLook(Head.Transform.Rotation.Forward, 1f, 0.75f, 0.5f);
+		animationHelper.MoveStyle = CitizenAnimationHelper.MoveStyles.Run;
+		animationHelper.DuckLevel = IsCrouching ? 1f : 0f;
 	}
 }
