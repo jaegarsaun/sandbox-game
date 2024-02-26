@@ -2,16 +2,33 @@ using Sandbox;
 using Sandbox.Citizen;
 using Sandbox.UI;
 
-public sealed class PlayerMovement : Component
+public sealed class PlayerController : Component
 {
+	// Variables
+	[Property] public float Health { get; set; } = 100f;
+
+	[Property] public float MaxHealth { get; set; } = 500f;
+
+	[Property] public float Armor { get; set; } = 0f;
+
+	[Property] public float MaxArmor { get; set; } = 100f;
+
+	[Property] public List<string> Inventory { get; set; } = new List<string>
+	{
+		"weapon_pistol"
+	};
+
+	public int ActiveSlot = 0;
+
+	public int Slots => 9;
 	// Movement Properties
-	[Property] public float GroundControl { get; set; } = 4.0f;
-	[Property] public float AirControl { get; set; } = 0.1f;
-	[Property] public float MaxForce { get; set; } = 50f;
-	[Property] public float Speed { get; set; } = 160f;
-	[Property] public float RunSpeed { get; set; } = 290f;
-	[Property] public float CrouchSpeed { get; set; } = 90f;
-	[Property] public float JumpForce { get; set; } = 400f;
+	[Property, Group("Movement")] public float GroundControl { get; set; } = 4.0f;
+	[Property, Group("Movement")] public float AirControl { get; set; } = 0.1f;
+	[Property, Group("Movement")] public float MaxForce { get; set; } = 50f;
+	[Property, Group("Movement")] public float Speed { get; set; } = 160f;
+	[Property, Group("Movement")] public float RunSpeed { get; set; } = 290f;
+	[Property, Group("Movement")] public float CrouchSpeed { get; set; } = 90f;
+	[Property, Group("Movement")] public float JumpForce { get; set; } = 400f;
 	
 	// Object References
 	[Property] public GameObject Head { get; set; }
@@ -152,7 +169,7 @@ public sealed class PlayerMovement : Component
 		
 		if ( Input.Released( "Duck" ) && IsCrouching )
 		{
-			// TODO: do an upwards trace to see if there is a cealing above us
+			// TODO: do an upwards trace to see if there is a roof above us
 			IsCrouching = false;
 			characterController.Height *= 2f;
 		}

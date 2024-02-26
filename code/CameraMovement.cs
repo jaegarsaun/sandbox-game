@@ -3,7 +3,7 @@ using Sandbox;
 public sealed class CameraMovement : Component
 {
 	//Properties
-	[Property] public PlayerMovement Player { get; set; }
+	[Property] public PlayerController Player { get; set; }
 	[Property] public GameObject Body { get; set; }
 	[Property] public GameObject Head { get; set; }
 	[Property] public float Distance { get; set; } = 0f;
